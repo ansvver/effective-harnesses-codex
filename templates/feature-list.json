@@ -1,7 +1,29 @@
 {
-  "version": "1.1",
+  "version": "2.0",
   "project": "",
-  "test_command": "npm test",
-  "created": "2026-02-14",
-  "features": []
+  "created": "2026-03-18",
+  "updated": "2026-03-18",
+  "default_test_strategy": "Prefer automated tests, then build checks, then smoke checks, then manual verification.",
+  "features": [
+    {
+      "id": "feat-001",
+      "category": "functional",
+      "priority": 1,
+      "description": "Example feature description",
+      "steps": [
+        "Describe the first implementation step",
+        "Describe the second implementation step"
+      ],
+      "status": "pending",
+      "passes": false,
+      "verification": {
+        "strategy": "mixed",
+        "command": null,
+        "status": "pending",
+        "summary": "Add the strongest known verification method for this feature."
+      },
+      "notes": "Only move this feature to in_progress when it becomes the single active session target.",
+      "last_updated": "2026-03-18"
+    }
+  ]
 }

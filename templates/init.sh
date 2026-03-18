@@ -1,16 +1,20 @@
 #!/bin/bash
 
-# 项目启动脚本
-# 请根据实际项目修改启动命令
+set -euo pipefail
 
-# 示例：Node.js 项目
-# npm run dev
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-# 示例：Python 项目
-# python manage.py runserver
+# Project startup helper for long-running Codex sessions.
+# Replace the commented examples below with repo-specific commands.
 
-# 示例：Go 项目
-# go run main.go
+echo "Starting project services..."
 
-echo "Starting development server..."
-# 在此添加你的启动命令
+# Example: Python backend
+# cd "$ROOT_DIR"
+# ./.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
+
+# Example: Node frontend
+# cd "$ROOT_DIR/frontend"
+# npm run start:dev
+
+echo "Edit this script to match the repo's real startup sequence."

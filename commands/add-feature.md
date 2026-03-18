@@ -1,93 +1,57 @@
-# /harness-add 命令
+# Add Feature
 
-## 功能
+Use this flow when the user wants to add tracked work to `.effective-harnesses/feature_list.json`.
 
-向 feature_list.json 添加新的 feature。
+## Goal
 
-## 执行步骤
+Add a single well-scoped feature entry that can be worked on incrementally in later sessions.
 
-### 1. 确认项目已初始化
+## Procedure
 
-检查是否存在 feature_list.json：
+1. Confirm the project is already harnessed.
+2. Read `.effective-harnesses/feature_list.json`.
+3. Gather or infer:
+   - category
+   - short description
+   - implementation steps
+   - priority
+   - verification strategy
+4. Generate the next sequential feature ID.
+5. Append the new feature without modifying unrelated entries.
+6. If this new feature is the current session target, immediately follow `commands/activate-feature.md` before substantial implementation.
 
-```bash
-ls feature_list.json
-```
+## Interaction rules
 
-如果不存在，提示用户先运行 `/harness-init`。
+If the new feature request is too vague to implement safely, ask before creating it.
 
-### 2. 收集 Feature 信息
+Ask when any of these are unclear:
 
-使用 AskUserQuestion 收集以下信息：
+- what user-visible or engineering outcome the feature should produce
+- what is in scope versus out of scope
+- what should count as "done"
+- what verification target should be attached to the feature
 
-1. **Category 类型**
-   - functional (新功能)
-   - bugfix (Bug 修复)
-   - refactor (重构)
+Prefer a short clarification such as:
 
-2. **Feature 描述**
-   - 简短描述这个 feature 要做什么
+- `What should count as passed for this feature: a test command, a build, or a smoke check?`
+- `Should this feature cover only X, or both X and Y?`
+- `What is the concrete output you expect when this feature is done?`
 
-3. **实现步骤**
-   - 列出实现这个功能需要的主要步骤（最多 5 个）
+## Feature quality rules
 
-4. **优先级**
-   - 1 (高)
-   - 2 (中)
-   - 3 (低)
+- Prefer one user-visible or engineering-coherent outcome per feature.
+- Keep `steps` concrete and bounded.
+- Default `status` to `pending`.
+- Default `passes` to `false`.
+- Set `verification.strategy` based on the strongest known verification path.
+- If no command exists yet, leave `verification.command` null and explain the plan in `verification.summary`.
+- If the pass condition is unclear, ask before finalizing the feature entry instead of inventing a weak verification target.
+- Do not mark a newly added feature `in_progress` unless the session is explicitly activating it right now.
 
-5. **单元测试命令**（必填）
-   - 用于验证此功能的测试命令，如：
-     - `npm test` (JavaScript/TypeScript)
-     - `pytest` (Python)
-     - `go test ./...` (Go)
-     - `cargo test` (Rust)
-     - `mvn test` (Java)
-   - 如果暂无测试命令，填写 "none"，但需要在实现后补充测试
+## Categories
 
-### 3. 读取现有 feature_list.json
-
-```bash
-Read feature_list.json
-```
-
-### 4. 生成新 Feature ID
-
-根据现有 features 数量生成 ID：
-- 第一个: feat-001
-- 第二个: feat-002
-- 以此类推
-
-### 5. 添加新 Feature
-
-更新 feature_list.json，添加新 feature：
-
-```json
-{
-  "id": "feat-XXX",
-  "category": "functional",
-  "priority": 1,
-  "description": "描述",
-  "steps": ["步骤1", "步骤2"],
-  "test_command": "npm test",
-  "test_status": "pending",
-  "test_output": "",
-  "status": "pending",
-  "passes": false
-}
-```
-
-### 6. 提交更改
-
-```bash
-git add feature_list.json
-git commit -m "Add: feature-description"
-```
-
-## 输出
-
-显示新添加的 feature 信息：
-- Feature ID
-- 描述
-- 优先级
-- 建议的下一步操作
+- `functional`
+- `bugfix`
+- `refactor`
+- `docs`
+- `ops`

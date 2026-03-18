@@ -1,88 +1,49 @@
-# /harness-complete 命令
+# Complete / Verify Feature
 
-## 功能
+Use this flow when the user wants to finish a feature or confirm that it passes.
 
-标记指定 feature 为已完成，并更新进度。
+## Goal
 
-## 执行步骤
+Move a feature toward `completed` and `passes: true` without faking verification.
 
-### 1. 确认项目已初始化
+## Procedure
 
-检查 feature_list.json 是否存在。
+1. Read `.effective-harnesses/feature_list.json`.
+2. Choose the target feature, preferring a currently `in_progress` feature.
+3. Read its `verification` block.
+4. Run the strongest available verification for that feature.
+5. Update:
+   - `verification.status`
+   - `verification.summary`
+   - `status`
+   - `passes`
+   - `notes`
+   - `last_updated`
+6. Update `.effective-harnesses/agent-progress.md` with the verification outcome and next recommended step.
+7. Commit only if the repo is in a handoff-clean state.
 
-### 2. 列出所有未完成的 feature
+## Interaction rules
 
-```bash
-Read feature_list.json
-```
+Ask before completing a feature when any of these are unclear:
 
-提取所有 passes: false 的 feature。
+- whether the implementation is actually finished
+- whether the current verification target is the right gate
+- whether manual verification is acceptable
+- whether a failing verification should block completion or allow `completed` with `passes: false`
 
-### 3. 让用户选择要完成的 feature
+Prefer short clarifications such as:
 
-使用 AskUserQuestion 让用户选择：
-- 列出所有未完成的 feature
-- 或者选择 "全部完成" 选项
+- `Should I treat this feature as blocked if the external service is unavailable?`
+- `Is manual verification acceptable here, or do you want this to stay non-passing until automation exists?`
+- `Should this feature be considered complete if the code is done but the verification still fails?`
 
-### 4. 运行单元测试（必须步骤）
+## Decision rules
 
-**这是强制要求**，在标记为完成前必须执行：
-
-1. **读取 test_command**: 从 feature 中获取测试命令
-
-2. **运行测试**:
-   - 如果 test_command 不是 "none"，执行测试命令
-   - 记录测试输出
-
-3. **检查测试结果**:
-   - 如果测试失败，显示错误信息
-   - 询问用户是否修复测试或标记为已完成（即使测试失败）
-   - 只有测试通过才能将 passes 设置为 true
-
-4. **更新测试状态**:
-   - 如果测试通过: `test_status: "passed"`
-   - 如果测试失败: `test_status: "failed"`，并记录错误摘要
-
-### 5. 验证功能是否真正完成
-
-在标记为完成前，需要验证：
-
-1. **代码完整性**: 所有预期的代码变更都已实现
-2. **功能测试**: 功能是否按预期工作
-3. **无回归**: 现有功能未被破坏
-4. **单元测试通过**: 测试必须通过（除非用户明确允许跳过）
-
-可以询问用户：
-- "功能是否已经实现完成？"
-- "单元测试是否全部通过？"
-- "是否允许跳过测试？（不推荐）"
-
-### 6. 更新 feature 状态
-
-对于要完成的 feature：
-- 设置 `status: "completed"`
-- 只有测试通过才设置 `passes: true`
-- 记录完成时间（可选）
-
-### 7. 更新进度日志
-
-在 claude-progress.txt 中添加记录：
-
-```
-## 2026-02-14
-- Completed: feat-001 - 功能描述 (测试通过)
-```
-
-### 8. Git 提交
-
-```bash
-git add feature_list.json claude-progress.txt
-git commit -m "Complete: feat-001 - feature description"
-```
-
-## 输出
-
-显示已完成的 feature：
-- Feature ID
-- 描述
-- 下一个建议的 feature（如果有）
+- Set `passes: true` only when verification succeeded.
+- If implementation is done but verification failed, set:
+  - `status: "completed"`
+  - `passes: false`
+  - `verification.status: "failed"`
+- If implementation is done but only manual checks exist, keep `passes: false` unless the user explicitly accepts manual completion as sufficient and that policy is recorded.
+- If the feature cannot proceed because of an external dependency, use `status: "blocked"` and explain the blocker in `notes`.
+- If completion policy is ambiguous, ask instead of silently choosing one.

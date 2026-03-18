@@ -1,69 +1,27 @@
-# /harness-status 命令
+# Harness Status
 
-## 功能
+Use this flow when the user asks for the current project state under the harness.
 
-查看当前项目的开发进度。
+## Procedure
 
-## 执行步骤
+1. Read `.effective-harnesses/feature_list.json`.
+2. Read `.effective-harnesses/agent-progress.md`.
+3. Read recent `git log`.
+4. Summarize:
+   - project name
+   - total features
+   - completed features
+   - in-progress features
+   - blocked features
+   - pending features
+   - strongest current verification signal
+5. Identify the next recommended feature:
+   - prefer an existing `in_progress` feature
+   - otherwise choose the highest-priority incomplete feature
+6. If multiple features appear active or the harness artifacts disagree on the active feature, call that out as a harness integrity issue.
 
-### 1. 检查项目是否已初始化
+## Reporting rules
 
-确认 feature_list.json 存在：
-
-```bash
-ls feature_list.json
-```
-
-如果不存在，提示用户先运行 `/harness-init`。
-
-### 2. 读取 feature_list.json
-
-```bash
-Read feature_list.json
-```
-
-### 3. 读取进度日志（如果存在）
-
-```bash
-Read claude-progress.txt
-```
-
-### 4. 读取最近 git 提交
-
-```bash
-git log --oneline -5
-```
-
-### 5. 统计并展示进度
-
-计算：
-- 总 feature 数
-- 已完成数（passes: true）
-- 进行中数（status: in_progress）
-- 未开始数（status: pending）
-
-按 category 分类展示：
-
-```
-## Project: 项目名称
-Created: 2026-02-14
-
-## Progress
-Total: X | Completed: X | In Progress: X | Pending: X
-
-### Completed (X)
-- [x] feat-001: 功能描述
-
-### In Progress (X)
-- [ ] feat-002: 功能描述
-
-### Pending (X)
-- [ ] feat-003: 功能描述
-```
-
-## 输出
-
-- 项目基本信息
-- 分类展示所有 feature 及其状态
-- 最近 git 提交记录
-- 下一个建议执行的 feature
+- Distinguish `completed` from `passes: true`.
+- Call out features that are implemented but not yet fully verified.
+- Mention if the repo lacks strong automated tests and is relying on smoke or manual verification.
