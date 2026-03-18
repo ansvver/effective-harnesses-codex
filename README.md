@@ -1,140 +1,53 @@
-# Effective Harnesses
+# Effective Harnesses Codex
 
-基于 [Anthropic 工程博客](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) 经验总结的 Claude Code Skill，用于构建长时间运行 Agent 的有效框架。
+基于长期运行代理工作流整理的 Codex Skill，用于在多会话开发任务里稳定保存上下文、推进单一活跃 feature，并留下可恢复的执行记录。
 
-## 概述
-
-本项目提供了一套完整的框架，帮助你在长时间运行的开发项目中保持进度追踪和上下文记忆。特别适合：
-
-- 复现论文算法
-- 大型项目开发
-- 多阶段研究项目
-
-## 核心特性
-
-- **项目初始化**: 一键创建完整的开发框架
-- **Feature 管理**: 将复杂任务分解为可追踪的小任务
-- **会话恢复**: 每次打开项目自动恢复上下文
-- **进度追踪**: 实时查看项目完成状态
-- **Git 集成**: 自动记录每次工作内容
-- **单元测试**: 每个 feature 完成后必须通过测试验证
-- **代码规范**: 自动生成项目代码规范文档
-
-## 快速开始
-
-### 1. 安装
+## 安装
 
 ```bash
-git clone https://github.com/Suibosama/effective-harnesses.git ~/.claude/skills/effective-harnesses
+git clone git@github.com:ansvver/effective-harnesses-codex.git ~/.codex/skills/effective-harnesses
 ```
 
-### 2. 初始化项目
+## 适用场景
 
-在项目目录中告诉 Claude：
-> "使用 effective-harnesses 初始化项目"
+- 需要跨多次会话持续推进的工程任务
+- 需要明确 feature 拆分、状态追踪和交接记录的项目
+- 需要在实现前后保留验证结果与下一步建议的仓库
 
-Claude 会询问：
-- 项目名称
-- 开发服务器启动命令
-- 测试命令（如 npm test、pytest 等）
+## 仓库结构
 
-### 3. 添加 Feature
-
-> "添加一个 feature：实现数据加载模块"
-
-### 4. 查看进度
-
-> "查看项目状态"
-
-### 5. 标记完成
-
-> "完成当前 feature"
-
-## 项目结构
-
-```
-├── SKILL.md                    # 主 skill 文件
+```text
+.
+├── SKILL.md
 ├── commands/
-│   ├── init.md                # 初始化命令
-│   ├── add-feature.md         # 添加 feature 命令
-│   ├── status.md              # 查看进度命令
-│   └── complete.md            # 标记完成命令
-├── templates/
-│   ├── feature-list.json      # Feature 列表模板
-│   ├── init.sh                # 启动脚本模板
-│   └── progress.txt           # 进度日志模板
-└── README.md
+│   ├── add-feature.md
+│   ├── complete.md
+│   ├── init.md
+│   ├── run-to-pass.md
+│   └── status.md
+├── references/
+│   └── usage.md
+└── templates/
+    ├── HARNESS.md
+    ├── agent-progress.md
+    ├── feature-list.json
+    └── init.sh
 ```
 
-## 框架文件
+## 核心能力
 
-使用后会生成以下文件：
+- 初始化项目级 harness 文件
+- 维护单一活跃 feature 与可恢复的进度日志
+- 在实现前记录基线，在完成后记录验证结果
+- 为后续会话提供明确的启动顺序和交接信息
 
-| 文件 | 说明 |
-|------|------|
-| `feature_list.json` | 所有 feature 的状态清单 |
-| `init.sh` | 启动开发服务器的脚本 |
-| `claude-progress.txt` | 进度日志 |
-| `CODING_STANDARDS.md` | 项目代码规范 |
+## 使用方式
 
-## feature_list.json 结构
+在目标项目中直接告诉 Codex：
 
-```json
-{
-  "version": "1.1",
-  "project": "项目名称",
-  "test_command": "npm test",
-  "features": [
-    {
-      "id": "feat-001",
-      "category": "functional",
-      "priority": 1,
-      "description": "功能描述",
-      "steps": ["步骤1", "步骤2"],
-      "test_command": "npm test",
-      "test_status": "passed",
-      "test_output": "测试输出摘要",
-      "status": "completed",
-      "passes": true
-    }
-  ]
-}
-```
+- `Use effective-harnesses to adopt this repository.`
+- `Use effective-harnesses to add a feature: ...`
+- `Use effective-harnesses to complete feat-001.`
+- `Use effective-harnesses to summarize project progress.`
 
-## 单元测试要求
-
-每个 feature 完成后必须运行单元测试：
-
-1. **添加 feature 时**: 指定测试命令（如 `npm test`、`pytest` 等）
-2. **完成 feature 时**: 强制运行测试，只有测试通过才能标记为完成
-3. **测试状态**: feature 包含 `test_status` 字段，记录测试结果
-
-## Category 类型
-
-- `functional`: 新功能开发
-- `bugfix`: Bug 修复
-- `refactor`: 代码重构
-
-## 使用示例：复现论文
-
-假设要复现"基于流批融合的端到端自动驾驶算法"：
-
-1. 初始化项目
-2. 添加 feature：
-   - 数据集准备
-   - 感知模块
-   - 预测模块
-   - 规划模块
-   - 训练流程
-
-3. 逐个完成每个 feature
-4. 随时查看进度
-
-## 参考
-
-- [Anthropic 工程博客: Effective Harnesses for Long-Running Agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
-- [Claude Code 官方文档](https://docs.anthropic.com/en/docs/claude-code)
-
-## License
-
-MIT
+更完整的使用说明见 `references/usage.md`。
