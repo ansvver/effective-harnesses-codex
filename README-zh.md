@@ -1,5 +1,7 @@
 # Effective Harnesses Codex
 
+[English](./README.md)
+
 一个面向 Codex 深度优化的长期运行 Agent Harness 工作流版本。
 
 这个仓库将 Anthropic 对长时间运行 Agent 的 harness 思路，进一步落地为更适合 Codex 的工程化流程：一次只聚焦一个活跃 feature、把关键状态持久化到仓库中、严格区分“已完成实现”和“已通过验证”，并通过清晰的交接产物让后续会话可以低成本接续工作，而不是依赖模型记忆重新恢复上下文。

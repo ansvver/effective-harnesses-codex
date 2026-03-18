@@ -1,5 +1,7 @@
 # Effective Harnesses Codex
 
+[中文说明](./README-zh.md)
+
 An opinionated, Codex-optimized evolution of the effective harness workflow for long-running agent sessions.
 
 This repository turns the core ideas from Anthropic's long-running agent harnesses into a more operational workflow for Codex: one active feature at a time, durable state across sessions, explicit verification, and clean handoff artifacts that let work continue without reloading the entire project into context.
