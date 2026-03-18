@@ -2,6 +2,13 @@
 
 基于长期运行代理工作流整理的 Codex Skill，用于在多会话开发任务里稳定保存上下文、推进单一活跃 feature，并留下可恢复的执行记录。
 
+这个仓库构建于以下工作之上：
+
+- https://github.com/Suibosama/effective-harnesses
+- https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
+
+感谢原始思路与实现提供的启发。
+
 ## 安装
 
 ```bash
